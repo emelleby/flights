@@ -67,7 +67,7 @@ export default function FlightSearchForm() {
 
   return (
     <>
-      <div className="w-full max-w-4xl mx-auto p-6">
+      <div className="w-full max-w-4xl mx-auto">
         <form onSubmit={handleSubmit} className="bg-white rounded-xl shadow-lg p-6 space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
             {/* Flight Type */}
