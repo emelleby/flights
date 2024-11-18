@@ -85,19 +85,19 @@ function FlightCard({ flight, formData }: { flight: RouteDetail; formData: FormI
         <div className="grid grid-cols-2 gap-2">
           <div className="text-sm">
             <span className="text-gray-600">Economy:</span>{' '}
-            <span className="font-medium">{formData.travelers * ir * type * flight.emissions.economy.toFixed(2)}</span>
+            <span className="font-medium">{(formData.travelers * ir * type * flight.emissions.economy).toFixed(2)}</span>
           </div>
           <div className="text-sm">
             <span className="text-gray-600">Premium Economy:</span>{' '}
-            <span className="font-medium">{formData.travelers * ir * type * flight.emissions.premium_economy.toFixed(2)}</span>
+            <span className="font-medium">{(formData.travelers * ir * type * flight.emissions.premium_economy).toFixed(2)}</span>
           </div>
           <div className="text-sm">
             <span className="text-gray-600">Business:</span>{' '}
-            <span className="font-medium">{formData.travelers * ir * type * flight.emissions.business.toFixed(2)}</span>
+            <span className="font-medium">{(formData.travelers * ir * type * flight.emissions.business).toFixed(2)}</span>
           </div>
           <div className="text-sm">
             <span className="text-gray-600">First:</span>{' '}
-            <span className="font-medium">{formData.travelers * ir * type * flight.emissions.first.toFixed(2)}</span>
+            <span className="font-medium">{(formData.travelers * ir * type * flight.emissions.first).toFixed(2)}</span>
           </div>
         </div>
       </div>
