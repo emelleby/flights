@@ -4,7 +4,7 @@ import SelectInput from './SelectInput';
 import EmissionsResult from './EmissionsResult';
 import { calculateEmissions, type EmissionsRequest, type EmissionsResponse } from '../services/api';
 
-interface FormInputData {
+export interface FormInputData {
   flightType: string;
   from: string;
   via: string;
@@ -54,7 +54,12 @@ export default function FlightSearchForm() {
     setError(null);
     
     try {
+      // const transformedData = transformFormData(formData);
+      
+      console.log("FormData before transformation:", formData); // Debug formData
       const transformedData = transformFormData(formData);
+      // console.log("TransformedData:", transformedData); // Debug transformed data
+      // const inputData = transformFormData(formData)
       const result = await calculateEmissions(transformedData);
       setEmissionsData(result);
     } catch (err) {
@@ -228,7 +233,7 @@ export default function FlightSearchForm() {
           </div>
         </form>
 
-        {emissionsData && <EmissionsResult data={emissionsData} loading={loading} />}
+        {emissionsData && <EmissionsResult data={emissionsData} loading={loading} formData={formData}/>}
       </div>
     </>
   );

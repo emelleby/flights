@@ -13,7 +13,7 @@ export interface RouteDetail {
   origin: string;
   destination: string;
   operatingCarrierCode: string;
-  flightNumber: string;
+  flightNumber: number;
   departureDate: {
     year: number;
     month: number;

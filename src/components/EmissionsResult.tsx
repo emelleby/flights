@@ -1,15 +1,31 @@
 import React from 'react';
 import { Plane, Route, Ruler, AlertCircle, Calendar, Users } from 'lucide-react';
 import type { EmissionsResponse, RouteDetail } from '../services/api';
+import { type FormInputData } from './FlightSearchForm';
 
 interface EmissionsResultProps {
   data: EmissionsResponse;
   loading: boolean;
+  formData: FormInputData;
 }
 
-function FlightCard({ flight }: { flight: RouteDetail }) {
+function FlightCard({ flight, formData }: { flight: RouteDetail; formData: FormInputData  }) {
+  console.log("Request Data in FlightCard:", formData);
+  let type: number;
+  if (formData.flightType === "Return") {
+    type = 2;
+  } else {
+    type = 1; // Default or alternative
+  }
+  let ir: number;
+  if (formData.radiativeFactor) {
+    ir = 2;
+  } else {
+    ir = 1; // Default or alternative
+  }
+
   const formatDate = (date: { year: number; month: number; day: number }) => {
-    return new Date(date.year, date.month - 1, date.day).toLocaleDateString('en-US', {
+    return new Date(date.year, date.month - 1, date.day).toLocaleDateString('no-NO', {
       year: 'numeric',
       month: 'short',
       day: 'numeric'
@@ -24,8 +40,11 @@ function FlightCard({ flight }: { flight: RouteDetail }) {
             <Plane className="w-5 h-5 text-blue-600" />
           </div>
           <span className="font-medium text-gray-900">
-            {flight.operatingCarrierCode} {flight.flightNumber}
+            {flight.operatingCarrierCode === "" || flight.flightNumber === 0
+              ? "No specific flight found for this leg"
+              : `${flight.operatingCarrierCode} ${flight.flightNumber}`}
           </span>
+
         </div>
         {!flight.found && (
           <div className="flex items-center text-amber-600">
@@ -57,7 +76,7 @@ function FlightCard({ flight }: { flight: RouteDetail }) {
         </div>
         <div className="flex items-center space-x-2">
           <Users className="w-4 h-4 text-gray-500" />
-          <span className="text-sm text-gray-600">{flight.travelers} traveler(s)</span>
+          <span className="text-sm text-gray-600">{formData.travelers} traveler(s)</span>
         </div>
       </div>
 
@@ -66,19 +85,19 @@ function FlightCard({ flight }: { flight: RouteDetail }) {
         <div className="grid grid-cols-2 gap-2">
           <div className="text-sm">
             <span className="text-gray-600">Economy:</span>{' '}
-            <span className="font-medium">{flight.emissions.economy.toFixed(2)}</span>
+            <span className="font-medium">{formData.travelers * ir * type * flight.emissions.economy.toFixed(2)}</span>
           </div>
           <div className="text-sm">
             <span className="text-gray-600">Premium Economy:</span>{' '}
-            <span className="font-medium">{flight.emissions.premium_economy.toFixed(2)}</span>
+            <span className="font-medium">{formData.travelers * ir * type * flight.emissions.premium_economy.toFixed(2)}</span>
           </div>
           <div className="text-sm">
             <span className="text-gray-600">Business:</span>{' '}
-            <span className="font-medium">{flight.emissions.business.toFixed(2)}</span>
+            <span className="font-medium">{formData.travelers * ir * type * flight.emissions.business.toFixed(2)}</span>
           </div>
           <div className="text-sm">
             <span className="text-gray-600">First:</span>{' '}
-            <span className="font-medium">{flight.emissions.first.toFixed(2)}</span>
+            <span className="font-medium">{formData.travelers * ir * type * flight.emissions.first.toFixed(2)}</span>
           </div>
         </div>
       </div>
@@ -86,7 +105,7 @@ function FlightCard({ flight }: { flight: RouteDetail }) {
   );
 }
 
-export default function EmissionsResult({ data, loading }: EmissionsResultProps) {
+export default function EmissionsResult({ data, loading, formData }: EmissionsResultProps) {
   if (loading) {
     return (
       <div className="mt-8 bg-white rounded-xl shadow-lg p-6">
@@ -106,7 +125,7 @@ export default function EmissionsResult({ data, loading }: EmissionsResultProps)
   return (
     <div className="mt-8 space-y-6">
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div className="bg-blue-50 rounded-lg p-4">
+        <div className="bg-sky-50 ring-1 ring-sky-200 rounded-lg p-4">
           <div className="flex items-center space-x-3">
             <div className="bg-blue-100 rounded-full p-2">
               <Plane className="w-6 h-6 text-blue-600" />
@@ -119,7 +138,7 @@ export default function EmissionsResult({ data, loading }: EmissionsResultProps)
           </div>
         </div>
 
-        <div className="bg-green-50 rounded-lg p-4">
+        <div className="bg-teal-50 ring-1 ring-teal-200 rounded-lg p-4">
           <div className="flex items-center space-x-3">
             <div className="bg-green-100 rounded-full p-2">
               <Users className="w-6 h-6 text-green-600" />
@@ -131,7 +150,7 @@ export default function EmissionsResult({ data, loading }: EmissionsResultProps)
           </div>
         </div>
 
-        <div className="bg-purple-50 rounded-lg p-4">
+        <div className="bg-purple-50 ring-1 ring-purple-200 rounded-lg p-4">
           <div className="flex items-center space-x-3">
             <div className="bg-purple-100 rounded-full p-2">
               <Ruler className="w-6 h-6 text-purple-600" />
@@ -148,7 +167,7 @@ export default function EmissionsResult({ data, loading }: EmissionsResultProps)
         <h3 className="text-lg font-semibold text-gray-900">Flight Details</h3>
         <div className="grid grid-cols-1 gap-4">
           {data.route_details.map((flight, index) => (
-            <FlightCard key={index} flight={flight} />
+            <FlightCard key={index} flight={flight} formData={formData} />
           ))}
         </div>
       </div>
