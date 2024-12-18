@@ -10,7 +10,7 @@ interface EmissionsResultProps {
 }
 
 function FlightCard({ flight, formData }: { flight: RouteDetail; formData: FormInputData  }) {
-  console.log("Request Data in FlightCard:", formData);
+  // console.log("Request Data in FlightCard:", formData);
   let type: number;
   if (formData.flightType === "Return") {
     type = 2;
