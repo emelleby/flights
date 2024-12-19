@@ -49,6 +49,7 @@ export const calculateEmissions = async (data: PastFlight): Promise<EmissionsRes
     });
 
     return response.data;
+    console.log('Response:', response.data);
   } catch (error) {
     if (axios.isAxiosError(error)) {
       throw new Error(error.response?.data?.message || 'Failed to calculate emissions');

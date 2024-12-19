@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Plane, Users, Calendar } from 'lucide-react';
 import { Label } from "../ui/label";
 import { Input } from "../ui/input";
@@ -48,6 +48,7 @@ export default function PastFlightsForm({
   showTooltip,
   setShowTooltip
 }: PastFlightsFormProps) {
+  const [inputValue, setInputValue] = useState<string>(formData.travelers.toString());
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -222,8 +223,19 @@ export default function PastFlightsForm({
             <Input
               type="number"
               min="1"
-              value={formData.travelers}
-              onChange={(e) => setFormData({ ...formData, travelers: parseInt(e.target.value) })}
+              value={inputValue}
+              onBlur={(e) => {
+                const value = Math.max(1, parseInt(e.target.value) || 1);
+                setFormData({ ...formData, travelers: value });
+                setInputValue(value.toString());
+              }}
+              onChange={(e) => {
+                setInputValue(e.target.value);
+                const parsed = parseInt(e.target.value);
+                if (!isNaN(parsed)) {
+                  setFormData({ ...formData, travelers: parsed });
+                }
+              }}
               required
             />
             <Users className="absolute right-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400 pointer-events-none" />
