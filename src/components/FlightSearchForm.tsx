@@ -14,6 +14,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import FormResult from './FormResult';
 
 export interface FormInputData {
   flightType: string;
@@ -78,6 +79,7 @@ export default function FlightSearchForm() {
   };
 
   return (
+    <>
     <div className="w-full max-w-4xl mx-auto">
       <Tabs defaultValue="past" value={activeTab} onValueChange={(value) => setActiveTab(value as 'past' | 'future')} className="w-full">
         <TabsList className="grid w-full grid-cols-2">
@@ -261,5 +263,7 @@ export default function FlightSearchForm() {
 
       {emissionsData && <EmissionsResult data={emissionsData} loading={loading} formData={formData}/>}
     </div>
+    <FormResult data={formData} />
+    </>
   );
 }
