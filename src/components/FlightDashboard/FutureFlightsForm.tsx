@@ -4,7 +4,6 @@ import { Label } from "../ui/label";
 import { Input } from "../ui/input";
 import { Checkbox } from "../ui/checkbox";
 import { Button } from "../ui/button";
-import { Textarea } from "../ui/textarea";
 import {
   Select,
   SelectContent,
@@ -13,17 +12,7 @@ import {
   SelectValue,
 } from "../ui/select";
 import { submitFutureFlight } from '../../services/futureFlightsService';
-
-interface FutureFlightData {
-  origin: string;
-  destination: string;
-  operatingCarrierCode: string;
-  flightNumber: string;
-  departureDate: string;
-  radiativeFactor: boolean;
-  notes: string;
-  travelers: number;
-}
+import { FutureFlightData } from '../../services/types';
 
 const AIRPORTS = ['OSL', 'CPH', 'MIA', 'FRA', 'SFO', 'LHR', 'CDG', 'JFK', 'ZRH', 'BOS'];
 const AIRLINES = ['AF', 'LX', 'SK', 'LH', 'BA', 'DL', 'UA'];
@@ -208,16 +197,6 @@ export default function FutureFlightsForm({
           onCheckedChange={(checked) => setFormData({ ...formData, radiativeFactor: checked as boolean })}
         />
         <Label htmlFor="radiativeFactor">Include radiative forcing in calculation</Label>
-      </div>
-
-      <div className="space-y-2">
-        <Label>Notes</Label>
-        <Textarea
-          value={formData.notes}
-          onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
-          placeholder="Add any notes about this future flight..."
-          className="h-24"
-        />
       </div>
 
       <Button type="submit" className="w-full">

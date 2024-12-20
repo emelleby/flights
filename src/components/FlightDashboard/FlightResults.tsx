@@ -16,14 +16,13 @@ interface FormInputData {
 }
 
 interface FutureFlightData {
-  flightType: string;
   origin: string;
   destination: string;
   operatingCarrierCode: string;
   flightNumber: string;
   departureDate: string;
   radiativeFactor: boolean;
-  notes: string;
+  travelers: number;
 }
 
 interface FlightResultsProps {
@@ -36,18 +35,39 @@ interface FlightResultsProps {
   error: string | null;
 }
 
+interface DateComponents {
+  year: number;
+  month: number;
+  day: number;
+}
+
 const formatEmissions = (grams: number): string => {
   const kg = grams / 1000;
   return `${kg.toFixed(2)} kg CO₂e`;
 };
 
-const formatDate = (dateStr: string) => {
-  const date = new Date(dateStr);
-  return date.toLocaleDateString('no-NO', {
-    year: 'numeric',
-    month: 'short',
-    day: 'numeric'
-  });
+const formatDate = (dateInput: string | DateComponents): string => {
+  try {
+    if (typeof dateInput === 'string') {
+      const date = new Date(dateInput);
+      return date.toLocaleDateString('en-US', { 
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
+      });
+    } else {
+      const { year, month, day } = dateInput;
+      const date = new Date(year, month - 1, day);
+      return date.toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
+      });
+    }
+  } catch (error) {
+    console.error('Error formatting date:', error);
+    return 'Invalid date';
+  }
 };
 
 export default function FlightResults({ 

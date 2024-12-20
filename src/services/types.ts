@@ -18,7 +18,6 @@ export interface PastFlight extends FlightBase {
 // Future flights specific
 export interface FutureFlight extends FlightBase {
   estimatedEmissions?: number;
-  notes?: string;
 }
 
 // API Response types
@@ -51,4 +50,14 @@ export interface EmissionsResponse {
   per_passenger: number;
   without_ir: number;
   route_details: RouteDetail[];
+}
+
+export interface FutureFlightData {
+  origin: string;
+  destination: string;
+  operatingCarrierCode: string;
+  flightNumber: string;
+  departureDate: string;
+  radiativeFactor: boolean;
+  travelers: number;
 }

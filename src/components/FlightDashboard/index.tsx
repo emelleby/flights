@@ -24,7 +24,6 @@ interface FutureFlightData {
   flightNumber: string;
   departureDate: string;
   radiativeFactor: boolean;
-  notes: string;
   travelers: number;
 }
 
@@ -46,7 +45,6 @@ const INITIAL_FUTURE_FORM_DATA: FutureFlightData = {
   flightNumber: '',
   departureDate: '',
   radiativeFactor: true,
-  notes: '',
   travelers: 1
 };
 
