@@ -12,27 +12,26 @@ import {
 } from "@/components/ui/select";
 
 interface FutureFlightData {
-  flightType: string;
   origin: string;
   destination: string;
   operatingCarrierCode: string;
   flightNumber: string;
   departureDate: string;
   radiativeFactor: boolean;
+  travelers: number;
 }
 
 const AIRPORTS = ['OSL', 'CPH', 'MIA', 'FRA', 'SFO', 'LHR', 'CDG', 'JFK', 'ZRH', 'BOS'];
 const AIRLINES = ['AF', 'LX', 'SK', 'LH', 'BA', 'DL', 'UA'];
-const FLIGHT_TYPES = ['Return', 'One way'];
 
 const INITIAL_FORM_DATA: FutureFlightData = {
-  flightType: 'Return',
   origin: '',
   destination: '',
   operatingCarrierCode: '',
   flightNumber: '',
   departureDate: '',
   radiativeFactor: false,
+  travelers: 1,
 };
 
 export default function FutureFlightForm() {
@@ -81,36 +80,22 @@ export default function FutureFlightForm() {
     }
   };
 
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
   return (
     <form onSubmit={handleSubmit} className="bg-white rounded-xl shadow-lg p-6 space-y-6">
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div className="space-y-2">
-          <Label htmlFor="flightType">Flight Type</Label>
+      <div className="grid gap-4">
+        <div className="grid gap-2">
+          <Label htmlFor="origin">Origin</Label>
           <Select
-            value={formData.flightType}
-            onValueChange={(value) => setFormData({ ...formData, flightType: value })}
-          >
-            <SelectTrigger>
-              <SelectValue placeholder="Select flight type" />
-            </SelectTrigger>
-            <SelectContent>
-              {FLIGHT_TYPES.map((type) => (
-                <SelectItem key={type} value={type}>
-                  {type}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
-
-        <div className="space-y-2">
-          <Label htmlFor="origin">From</Label>
-          <Select
+            name="origin"
             value={formData.origin}
-            onValueChange={(value) => setFormData({ ...formData, origin: value })}
+            onValueChange={(value) => handleInputChange({ target: { name: 'origin', value } })}
           >
             <SelectTrigger>
-              <SelectValue placeholder="Select origin" />
+              <SelectValue placeholder="Select origin airport" />
             </SelectTrigger>
             <SelectContent>
               {AIRPORTS.map((airport) => (
@@ -122,14 +107,15 @@ export default function FutureFlightForm() {
           </Select>
         </div>
 
-        <div className="space-y-2">
-          <Label htmlFor="destination">To</Label>
+        <div className="grid gap-2">
+          <Label htmlFor="destination">Destination</Label>
           <Select
+            name="destination"
             value={formData.destination}
-            onValueChange={(value) => setFormData({ ...formData, destination: value })}
+            onValueChange={(value) => handleInputChange({ target: { name: 'destination', value } })}
           >
             <SelectTrigger>
-              <SelectValue placeholder="Select destination" />
+              <SelectValue placeholder="Select destination airport" />
             </SelectTrigger>
             <SelectContent>
               {AIRPORTS.map((airport) => (
@@ -140,14 +126,13 @@ export default function FutureFlightForm() {
             </SelectContent>
           </Select>
         </div>
-      </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div className="space-y-2">
-          <Label htmlFor="airline">Airline</Label>
+        <div className="grid gap-2">
+          <Label htmlFor="operatingCarrierCode">Airline</Label>
           <Select
+            name="operatingCarrierCode"
             value={formData.operatingCarrierCode}
-            onValueChange={(value) => setFormData({ ...formData, operatingCarrierCode: value })}
+            onValueChange={(value) => handleInputChange({ target: { name: 'operatingCarrierCode', value } })}
           >
             <SelectTrigger>
               <SelectValue placeholder="Select airline" />
@@ -162,48 +147,51 @@ export default function FutureFlightForm() {
           </Select>
         </div>
 
-        <div className="space-y-2">
+        <div className="grid gap-2">
           <Label htmlFor="flightNumber">Flight Number</Label>
           <Input
             id="flightNumber"
+            name="flightNumber"
             type="text"
             value={formData.flightNumber}
-            onChange={(e) => setFormData({ ...formData, flightNumber: e.target.value })}
-            required
-            pattern="[0-9]*"
+            onChange={handleInputChange}
+            placeholder="Enter flight number"
           />
         </div>
 
-        <div className="space-y-2">
+        <div className="grid gap-2">
           <Label htmlFor="departureDate">Departure Date</Label>
-          <div className="relative">
-            <Input
-              id="departureDate"
-              type="date"
-              value={formData.departureDate}
-              onChange={(e) => setFormData({ ...formData, departureDate: e.target.value })}
-              required
-              min={new Date().toISOString().split('T')[0]}
-            />
-            <Calendar className="absolute right-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400 pointer-events-none" />
-          </div>
+          <Input
+            id="departureDate"
+            name="departureDate"
+            type="date"
+            value={formData.departureDate}
+            onChange={handleInputChange}
+          />
         </div>
-      </div>
 
-      <div className="flex items-center space-x-2">
-        <Checkbox
-          id="radiativeFactor"
-          checked={formData.radiativeFactor}
-          onCheckedChange={(checked) => 
-            setFormData({ ...formData, radiativeFactor: checked as boolean })
-          }
-        />
-        <Label
-          htmlFor="radiativeFactor"
-          className="text-sm text-gray-700 leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-        >
-          Include radiative forcing in calculation
-        </Label>
+        <div className="grid gap-2">
+          <Label htmlFor="travelers">Number of Travelers</Label>
+          <Input
+            id="travelers"
+            name="travelers"
+            type="number"
+            min="1"
+            value={formData.travelers}
+            onChange={handleInputChange}
+            placeholder="Enter number of travelers"
+          />
+        </div>
+
+        <div className="flex items-center space-x-2 pt-2">
+          <Checkbox
+            id="radiativeFactor"
+            name="radiativeFactor"
+            checked={formData.radiativeFactor}
+            onCheckedChange={(checked) => handleInputChange({ target: { name: 'radiativeFactor', value: checked } })}
+          />
+          <Label htmlFor="radiativeFactor">Include radiative forcing factor</Label>
+        </div>
       </div>
 
       <button

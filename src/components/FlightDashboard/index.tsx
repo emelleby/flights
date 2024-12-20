@@ -18,7 +18,6 @@ interface FormInputData {
 }
 
 interface FutureFlightData {
-  flightType: string;
   origin: string;
   destination: string;
   operatingCarrierCode: string;
@@ -26,6 +25,7 @@ interface FutureFlightData {
   departureDate: string;
   radiativeFactor: boolean;
   notes: string;
+  travelers: number;
 }
 
 const INITIAL_PAST_FORM_DATA: FormInputData = {
@@ -40,14 +40,14 @@ const INITIAL_PAST_FORM_DATA: FormInputData = {
 };
 
 const INITIAL_FUTURE_FORM_DATA: FutureFlightData = {
-  flightType: 'Return',
   origin: '',
   destination: '',
   operatingCarrierCode: '',
   flightNumber: '',
   departureDate: '',
   radiativeFactor: true,
-  notes: ''
+  notes: '',
+  travelers: 1
 };
 
 export default function FlightDashboard() {

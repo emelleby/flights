@@ -40,7 +40,7 @@ interface EmissionsPerClass {
   economy: number;
 }
 
-interface FlightEmissionResult {
+export interface FlightEmissionResult {
   flight: FlightDetails;
   emissionsGramsPerPax: EmissionsPerClass;
 }

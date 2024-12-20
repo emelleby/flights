@@ -15,7 +15,6 @@ import {
 import { submitFutureFlight } from '../../services/futureFlightsService';
 
 interface FutureFlightData {
-  flightType: string;
   origin: string;
   destination: string;
   operatingCarrierCode: string;
@@ -23,11 +22,11 @@ interface FutureFlightData {
   departureDate: string;
   radiativeFactor: boolean;
   notes: string;
+  travelers: number;
 }
 
 const AIRPORTS = ['OSL', 'CPH', 'MIA', 'FRA', 'SFO', 'LHR', 'CDG', 'JFK', 'ZRH', 'BOS'];
 const AIRLINES = ['AF', 'LX', 'SK', 'LH', 'BA', 'DL', 'UA'];
-const FLIGHT_TYPES = ['Return', 'One way'];
 
 interface FutureFlightsFormProps {
   formData: FutureFlightData;
@@ -42,6 +41,8 @@ export default function FutureFlightsForm({
   setError,
   setFutureEmissionsData
 }: FutureFlightsFormProps) {
+  const [inputValue, setInputValue] = useState<string>(formData.travelers.toString());
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
@@ -88,40 +89,15 @@ export default function FutureFlightsForm({
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6 p-4 bg-white rounded-lg shadow">
-      <div className="space-y-2">
-        <Label>Flight Type</Label>
-        <Select
-          value={formData.flightType}
-          onValueChange={(value) => setFormData({ ...formData, flightType: value })}
-        >
-          <SelectTrigger>
-            <SelectValue placeholder="Select flight type" />
-          </SelectTrigger>
-          <SelectContent>
-            {FLIGHT_TYPES.map((type) => (
-              <SelectItem key={type} value={type}>
-                {type}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-      </div>
-
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <div className="space-y-2">
-          <Label>From</Label>
+          <Label htmlFor="origin">From</Label>
           <Select
             value={formData.origin}
             onValueChange={(value) => setFormData({ ...formData, origin: value })}
-            required
           >
             <SelectTrigger>
-              <SelectValue placeholder="Select origin">
-                <div className="flex items-center">
-                  <Plane className="mr-2 h-4 w-4" />
-                  <span>{formData.origin || 'Select origin'}</span>
-                </div>
-              </SelectValue>
+              <SelectValue placeholder="Select origin" />
             </SelectTrigger>
             <SelectContent>
               {AIRPORTS.map((airport) => (
@@ -134,19 +110,13 @@ export default function FutureFlightsForm({
         </div>
 
         <div className="space-y-2">
-          <Label>To</Label>
+          <Label htmlFor="destination">To</Label>
           <Select
             value={formData.destination}
             onValueChange={(value) => setFormData({ ...formData, destination: value })}
-            required
           >
             <SelectTrigger>
-              <SelectValue placeholder="Select destination">
-                <div className="flex items-center">
-                  <Plane className="mr-2 h-4 w-4" />
-                  <span>{formData.destination || 'Select destination'}</span>
-                </div>
-              </SelectValue>
+              <SelectValue placeholder="Select destination" />
             </SelectTrigger>
             <SelectContent>
               {AIRPORTS.map((airport) => (
@@ -157,15 +127,29 @@ export default function FutureFlightsForm({
             </SelectContent>
           </Select>
         </div>
+
+        <div className="space-y-2">
+          <Label htmlFor="departureDate">Departure Date</Label>
+          <div className="relative">
+            <Input
+              id="departureDate"
+              type="date"
+              value={formData.departureDate}
+              onChange={(e) => setFormData({ ...formData, departureDate: e.target.value })}
+              required
+              min={new Date().toISOString().split('T')[0]}
+            />
+            <Calendar className="absolute right-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400 pointer-events-none" />
+          </div>
+        </div>
       </div>
 
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <div className="space-y-2">
-          <Label>Airline</Label>
+          <Label htmlFor="airline">Airline</Label>
           <Select
             value={formData.operatingCarrierCode}
             onValueChange={(value) => setFormData({ ...formData, operatingCarrierCode: value })}
-            required
           >
             <SelectTrigger>
               <SelectValue placeholder="Select airline" />
@@ -181,31 +165,39 @@ export default function FutureFlightsForm({
         </div>
 
         <div className="space-y-2">
-          <Label>Flight Number</Label>
+          <Label htmlFor="flightNumber">Flight Number</Label>
           <Input
+            id="flightNumber"
             type="text"
             value={formData.flightNumber}
             onChange={(e) => setFormData({ ...formData, flightNumber: e.target.value })}
-            placeholder="Enter flight number"
             required
+            pattern="[0-9]*"
           />
         </div>
-      </div>
 
-      <div className="grid grid-cols-2 gap-4">
         <div className="space-y-2">
-          <Label htmlFor="departureDate">Departure Date</Label>
-          <div className="relative">
-            <Input
-              id="departureDate"
-              type="date"
-              value={formData.departureDate}
-              onChange={(e) => setFormData({ ...formData, departureDate: e.target.value })}
-              min={new Date().toISOString().split('T')[0]}
-              required
-            />
-            <Calendar className="absolute right-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400 pointer-events-none" />
-          </div>
+          <Label htmlFor="travelers">Number of Travelers</Label>
+          <Input
+            id="travelers"
+            type="number"
+            min="1"
+            value={inputValue}
+            onBlur={(e) => {
+              const value = Math.max(1, parseInt(e.target.value) || 1);
+              setFormData({ ...formData, travelers: value });
+              setInputValue(value.toString());
+            }}
+            onChange={(e) => {
+              setInputValue(e.target.value);
+              const parsed = parseInt(e.target.value);
+              if (!isNaN(parsed)) {
+                setFormData({ ...formData, travelers: parsed });
+              }
+            }}
+            placeholder="Enter number of travelers"
+            required
+          />
         </div>
       </div>
 
