@@ -6,26 +6,9 @@ import FlightResults from './FlightResults';
 import { EmissionsResponse } from '../../services/api';
 import { FlightEmissionResult } from '../../services/futureFlightsService';
 
-interface FormInputData {
-  flightType: string;
-  from: string;
-  via: string;
-  destination: string;
-  flightClass: string;
-  travelers: number;
-  radiativeFactor: boolean;
-  departureDate: string;
-}
 
-interface FutureFlightData {
-  origin: string;
-  destination: string;
-  operatingCarrierCode: string;
-  flightNumber: string;
-  departureDate: string;
-  radiativeFactor: boolean;
-  travelers: number;
-}
+import { FormInputData, FutureFlightData } from '../../services/types';
+
 
 const INITIAL_PAST_FORM_DATA: FormInputData = {
   flightType: 'One way',
@@ -45,7 +28,8 @@ const INITIAL_FUTURE_FORM_DATA: FutureFlightData = {
   flightNumber: '',
   departureDate: '',
   radiativeFactor: true,
-  travelers: 1
+  travelers: 1,
+  class: 'economy'
 };
 
 export default function FlightDashboard() {

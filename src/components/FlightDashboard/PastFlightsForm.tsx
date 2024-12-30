@@ -11,23 +11,13 @@ import {
   SelectValue,
 } from "../ui/select";
 import { Button } from "../ui/button";
-import { EmissionsResponse, EmissionsRequest } from '../../services/api';
-import { calculateEmissions } from '../../services/api';
+import { calculateEmissions } from '../../services/pastFlightsService';
+import { EmissionsResponse } from '../../services/api';
+import { FormInputData } from '../../services/types';
 
 const AIRPORTS = ['OSL', 'CPH', 'MIA', 'FRA', 'SFO', 'LHR', 'CDG', 'JFK', 'ZRH', 'BOS'];
 const FLIGHT_TYPES = ['Return', 'One way'];
 const FLIGHT_CLASSES = ['Economy', 'Premium Economy', 'Business', 'First'];
-
-interface FormInputData {
-  flightType: string;
-  from: string;
-  via: string;
-  destination: string;
-  flightClass: string;
-  travelers: number;
-  radiativeFactor: boolean;
-  departureDate: string;
-}
 
 interface PastFlightsFormProps {
   formData: FormInputData;
@@ -57,18 +47,20 @@ export default function PastFlightsForm({
     setError(null);
     
     try {
+      // Validate required fields (origin, destination)
       if (!formData.from || !formData.destination) {
         throw new Error('Origin and destination airports are required');
       }
-
+      // Set the origin,(via) and destination airports
       const route = [formData.from];
       if (formData.via) {
         route.push(formData.via);
       }
       route.push(formData.destination);
 
-      const requestData: EmissionsRequest = {
-        class: formData.flightClass.toLowerCase().replace(' ', '_'),
+
+      const requestData: any = {
+        class: formData.cabinClass.toLowerCase().replace(' ', '_'),
         departureDate: formData.departureDate,
         ir_factor: formData.radiativeFactor,
         return: formData.flightType === 'Return',
@@ -111,8 +103,8 @@ export default function PastFlightsForm({
         <div className="space-y-2">
           <Label>Cabin Class</Label>
           <Select
-            value={formData.flightClass}
-            onValueChange={(value) => setFormData({ ...formData, flightClass: value })}
+            value={formData.cabinClass}
+            onValueChange={(value) => setFormData({ ...formData, cabinClass: value })}
           >
             <SelectTrigger>
               <SelectValue placeholder="Select cabin class" />
@@ -128,7 +120,7 @@ export default function PastFlightsForm({
         </div>
       </div>
 
-      <div className="grid grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <div className="space-y-2">
           <Label>From</Label>
           <Select

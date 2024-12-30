@@ -2,28 +2,8 @@ import React from 'react';
 import { Plane, Route, Ruler, AlertCircle, Calendar, Users } from 'lucide-react';
 import { EmissionsResponse } from '../../services/api';
 import { FlightEmissionResult } from '../../services/futureFlightsService';
+import { FormInputData, FutureFlightData } from '../../services/types';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "../ui/card";
-
-interface FormInputData {
-  flightType: string;
-  from: string;
-  via: string;
-  destination: string;
-  flightClass: string;
-  travelers: number;
-  radiativeFactor: boolean;
-  departureDate: string;
-}
-
-interface FutureFlightData {
-  origin: string;
-  destination: string;
-  operatingCarrierCode: string;
-  flightNumber: string;
-  departureDate: string;
-  radiativeFactor: boolean;
-  travelers: number;
-}
 
 interface FlightResultsProps {
   activeTab: 'past' | 'future';
@@ -114,7 +94,7 @@ export default function FlightResults({
         <>
           <Card className="bg-white">
             <CardContent className="pt-6">
-              <div className="grid grid-cols-3 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div className="bg-blue-50 rounded-lg p-4">
                   <div className="flex items-center space-x-2">
                     <div className="bg-blue-100 rounded-full p-2">
@@ -126,7 +106,7 @@ export default function FlightResults({
                       {pastFormData.radiativeFactor && (
                         <div className="flex items-center text-amber-600 mt-1">
                           <AlertCircle className="w-4 h-4 mr-1" />
-                          <span className="text-xs">Including radiative forcing</span>
+                          <span className="text-xs">{emissionsData.without_ir} kg CO₂e Excluding radiative forcing</span>
                         </div>
                       )}
                     </div>
@@ -239,7 +219,7 @@ export default function FlightResults({
         <>
           <Card className="bg-white">
             <CardContent className="pt-6">
-              <div className="grid grid-cols-3 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div className="bg-blue-50 rounded-lg p-4">
                   <div className="flex items-center space-x-2">
                     <div className="bg-blue-100 rounded-full p-2">
@@ -252,12 +232,12 @@ export default function FlightResults({
                       </p>
                       {futureFormData.radiativeFactor && (
                         <>
-                          <p className="text-sm text-gray-500">
+                          {/* <p className="text-sm text-gray-500">
                             Without IR: {formatEmissions(futureEmissionsData.emissionsGramsPerPax.economy * futureFormData.travelers)}
-                          </p>
+                          </p> */}
                           <div className="flex items-center text-amber-600 mt-1">
                             <AlertCircle className="w-4 h-4 mr-1" />
-                            <span className="text-xs">Including radiative forcing</span>
+                            <span className="text-xs">{formatEmissions(futureEmissionsData.emissionsGramsPerPax.economy * futureFormData.travelers)} kg CO₂e Excluding radiative forcing</span>
                           </div>
                         </>
                       )}

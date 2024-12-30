@@ -7,20 +7,40 @@ export interface FlightBase {
   radiativeFactor: boolean;
 }
 
-// Past flights specific
-export interface PastFlight extends FlightBase {
-  operatingCarrierCode: string;
+export interface FlightDetails {
   flightNumber: string;
+  origin: string;
+  destination: string;
+  operatingCarrierCode: string;
+  departureDate: string;
   class: string;
-  travelers: number;
 }
 
-// Future flights specific
-export interface FutureFlight extends FlightBase {
+// Form Types
+export interface FormInputData {
+  flightType: string;
+  from: string;
+  via: string;
+  destination: string;
+  cabinClass: string;
+  travelers: number;
+  radiativeFactor: boolean;
+  departureDate: string;
+}
+
+export interface FutureFlightData {
+  origin: string;
+  destination: string;
+  operatingCarrierCode: string;
+  flightNumber: string;
+  departureDate: string;
+  radiativeFactor: boolean;
+  travelers: number;
+  class: string;
   estimatedEmissions?: number;
 }
 
-// API Response types
+// API Response Types
 export interface FlightEmissions {
   economy: number;
   premium_economy: number;
@@ -50,14 +70,4 @@ export interface EmissionsResponse {
   per_passenger: number;
   without_ir: number;
   route_details: RouteDetail[];
-}
-
-export interface FutureFlightData {
-  origin: string;
-  destination: string;
-  operatingCarrierCode: string;
-  flightNumber: string;
-  departureDate: string;
-  radiativeFactor: boolean;
-  travelers: number;
 }

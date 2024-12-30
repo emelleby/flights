@@ -12,8 +12,9 @@ interface EmissionsRequest {
   travelers: number;
 }
 
-const validateRequest = (data: PastFlight): string | null => {
-  if (!data.origin || !data.destination) {
+const validateRequest = (data: EmissionsRequest): string | null => {
+  console.log(data);
+  if (data.route.length < 2) {
     return 'Origin and destination airports are required';
   }
   if (!data.departureDate) {
@@ -25,7 +26,7 @@ const validateRequest = (data: PastFlight): string | null => {
   return null;
 };
 
-export const calculateEmissions = async (data: PastFlight): Promise<EmissionsResponse> => {
+export const calculateEmissions = async (data: EmissionsRequest): Promise<EmissionsResponse> => {
   try {
     const validationError = validateRequest(data);
     if (validationError) {
@@ -35,11 +36,13 @@ export const calculateEmissions = async (data: PastFlight): Promise<EmissionsRes
     const requestData: EmissionsRequest = {
       class: data.class,
       departureDate: data.departureDate,
-      ir_factor: data.radiativeFactor,
-      return: data.flightType.toLowerCase() === 'return',
-      route: [data.origin, data.destination].filter(Boolean),
+      ir_factor: data.ir_factor,
+      return: data.return,
+      route: data.route,
       travelers: data.travelers
     };
+
+    console.log('Request payload:', JSON.stringify(requestData, null, 2));
 
     const response = await axios.post(`${API_BASE_URL}/calculate-emissions`, requestData, {
       headers: {

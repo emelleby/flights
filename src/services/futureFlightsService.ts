@@ -54,6 +54,7 @@ interface ModelVersion {
 
 interface TravelAPIResponse {
   flightEmissions: FlightEmissionResult[];
+  emissionsGramsPerPax: EmissionsPerClass;
   modelVersion: ModelVersion;
 }
 
@@ -104,9 +105,10 @@ export const submitFutureFlight = async (
     );
 
     console.log('API Response:', response.data);
-
-    if (!response.data.flightEmissions || response.data.flightEmissions.length === 0) {
-      throw new Error('No flight emissions data returned from the API');
+    // Check if the API response contains flight emissions data
+    // Need to fix this if there are more than one flight sent to api.
+    if (!response.data.flightEmissions[0].emissionsGramsPerPax || response.data.flightEmissions.length === 0) {
+      throw new Error('No flight emissions data returned from the API. Please check your inputs.');
     }
 
     return response.data.flightEmissions[0];

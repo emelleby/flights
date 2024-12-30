@@ -12,10 +12,11 @@ import {
   SelectValue,
 } from "../ui/select";
 import { submitFutureFlight } from '../../services/futureFlightsService';
-import { FutureFlightData } from '../../services/types';
+import { FutureFlightData, FlightDetails } from '../../services/types';
 
 const AIRPORTS = ['OSL', 'CPH', 'MIA', 'FRA', 'SFO', 'LHR', 'CDG', 'JFK', 'ZRH', 'BOS'];
 const AIRLINES = ['AF', 'LX', 'SK', 'LH', 'BA', 'DL', 'UA'];
+const CABIN_CLASSES = ['economy', 'premium_economy', 'business', 'first'];
 
 interface FutureFlightsFormProps {
   formData: FutureFlightData;
@@ -65,8 +66,9 @@ export default function FutureFlightsForm({
         destination: formData.destination,
         operatingCarrierCode: formData.operatingCarrierCode,
         flightNumber: formData.flightNumber,
-        departureDate: formData.departureDate
-      });
+        departureDate: formData.departureDate,
+        class: formData.class
+      } as FlightDetails);
 
       console.log('Future flight emissions:', result);
       setFutureEmissionsData(result);
@@ -165,6 +167,27 @@ export default function FutureFlightsForm({
           />
         </div>
 
+        <div className="space-y-2">
+          <Label htmlFor="class">Cabin Class</Label>
+          <Select
+            value={formData.class}
+            onValueChange={(value) => setFormData({ ...formData, class: value })}
+          >
+            <SelectTrigger>
+              <SelectValue placeholder="Select cabin class" />
+            </SelectTrigger>
+            <SelectContent>
+              {CABIN_CLASSES.map((cabinClass) => (
+                <SelectItem key={cabinClass} value={cabinClass}>
+                  {cabinClass.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase())}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <div className="space-y-2">
           <Label htmlFor="travelers">Number of Travelers</Label>
           <Input
